@@ -1,7 +1,8 @@
 package com.walid.credit.model;
 
-import java.util.List;
+import java.util.HashSet;
 import java.util.Objects;
+import java.util.Set;
 
 /**
  * @author Walid Moustafa
@@ -10,7 +11,7 @@ public class Entity {
 
     private String id;
     private Entity parent;
-    private List<Entity> children;
+    private Set<Entity> children = new HashSet<>();
     private long limit;
     private long childTotalLimit;
     private long utilisation;
@@ -21,28 +22,35 @@ public class Entity {
         this.id = id;
     }
 
-    public void setParent(Entity parent) {
+    public void linkToParent(Entity parent) {
         this.parent = parent;
-    }
-
-    public void setChildren(List<Entity> children) {
-        this.children = children;
+        parent.addChild(this);
     }
 
     public void setLimit(long limit) {
         this.limit = limit;
+        if (Objects.nonNull(parent)) {
+            parent.raiseChildTotalLimit(limit);
+        }
     }
 
-    public void setChildTotalLimit(long childTotalLimit) {
-        this.childTotalLimit = childTotalLimit;
+    public void raiseChildTotalLimit(long childLimit) {
+        this.childTotalLimit += childLimit;
+        if (Objects.nonNull(parent)) {
+            parent.raiseChildTotalLimit(childLimit);
+        }
     }
 
     public void setUtilisation(long utilisation) {
         this.utilisation = utilisation;
+        raiseTotalUtilisation(utilisation);
     }
 
-    public void setTotalUtilisation(long totalUtilisation) {
-        this.totalUtilisation = totalUtilisation;
+    public void raiseTotalUtilisation(long utilisation) {
+        this.totalUtilisation += utilisation;
+        if (Objects.nonNull(parent)) {
+            parent.raiseTotalUtilisation(utilisation);
+        }
     }
 
     public void setLoaded() {
@@ -51,6 +59,10 @@ public class Entity {
 
     public boolean alreadyLoaded() {
         return isLoaded;
+    }
+
+    public void addChild(Entity child) {
+        children.add(child);
     }
 
     @Override
