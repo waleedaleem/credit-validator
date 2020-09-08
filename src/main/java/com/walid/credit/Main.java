@@ -7,6 +7,8 @@ import java.util.logging.Logger;
 
 import com.walid.credit.process.CreditProcessor;
 import com.walid.credit.process.CreditProcessorImpl;
+import com.walid.credit.repository.CreditRepo;
+import com.walid.credit.repository.CreditRepoImpl;
 
 /**
  * @author Walid Moustafa
@@ -17,7 +19,9 @@ public class Main {
         "-h", "-help", "--help"
     };
     private static final Logger logger = Logger.getLogger(Main.class.getName());
-    private static final CreditProcessor creditProcessor = CreditProcessorImpl.getInstance();
+    private static final CreditRepo creditRepo = CreditRepoImpl.getInstance();
+    private static final CreditProcessor creditProcessor = CreditProcessorImpl.getInstance(
+            creditRepo);
 
     public static void main(String[] args) throws IOException {
         if (args.length != 1 || Arrays.asList(HELP_ALIASES).contains(args[0])) {

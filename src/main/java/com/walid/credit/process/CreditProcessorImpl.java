@@ -8,17 +8,21 @@ import java.io.Reader;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVRecord;
 
+import com.walid.credit.repository.CreditRepo;
+
 /**
  * @author Walid Moustafa
  */
 public class CreditProcessorImpl implements CreditProcessor {
 
-    private static final CreditProcessor instance = new CreditProcessorImpl();
+    private static final CreditProcessorImpl instance = new CreditProcessorImpl();
+    private CreditRepo repo;
 
     private CreditProcessorImpl() {
     }
 
-    public static CreditProcessor getInstance() {
+    public static CreditProcessor getInstance(CreditRepo repo) {
+        instance.setRepo(repo);
         return instance;
     }
 
@@ -28,9 +32,12 @@ public class CreditProcessorImpl implements CreditProcessor {
             Iterable<CSVRecord> records = CSVFormat.DEFAULT.parse(in);
             for (CSVRecord record : records) {
 
-                // TODO add read entity to repo
+                // TODO read entity to repo
             }
         }
     }
 
+    private void setRepo(CreditRepo repo) {
+        this.repo = repo;
+    }
 }
