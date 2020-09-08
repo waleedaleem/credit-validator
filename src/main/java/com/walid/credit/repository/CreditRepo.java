@@ -1,5 +1,7 @@
 package com.walid.credit.repository;
 
+import org.apache.commons.csv.CSVRecord;
+
 import com.walid.credit.model.Entity;
 
 /**
@@ -7,5 +9,5 @@ import com.walid.credit.model.Entity;
  */
 public interface CreditRepo {
 
-    void addEntity(Entity entity);
+    Entity addEntity(CSVRecord record);
 }
