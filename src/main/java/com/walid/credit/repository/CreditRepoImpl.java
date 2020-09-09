@@ -1,9 +1,12 @@
 package com.walid.credit.repository;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.function.Predicate;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 import org.apache.commons.csv.CSVRecord;
 import org.apache.commons.lang3.StringUtils;
@@ -57,7 +60,7 @@ public class CreditRepoImpl implements CreditRepo {
                 return null;
             }
             entity.setLoaded();
-            logger.info(entity.toString());
+            logger.info(entity.deepPrint());
         }
         return entity;
     }
@@ -81,5 +84,38 @@ public class CreditRepoImpl implements CreditRepo {
             entities.put(entityId, parent);
         }
         return parent;
+    }
+
+    @Override
+    public void validateEntities() {
+        Predicate<Entity> utilisationBreach = e -> e.getTotalUtilisation() > e.getLimit();
+
+        entities.values().parallelStream().filter(utilisationBreach).forEach(
+                Entity::setUtilisationBreach);
+
+        Predicate<Entity> limitMisconfig = e -> e.getChildTotalLimit() > e.getLimit();
+        entities.values().parallelStream().filter(limitMisconfig).forEach(
+                Entity::setLimitMisconfig);
+
+        entities.values().forEach(e -> logger.info(e.toString()));
+    }
+
+    @Override
+    public List<String> getValidEntityIds() {
+        Predicate<Entity> valid = e -> !(e.isUtilisationBreach() || e.isLimitMisconfig());
+        return entities.values().stream().filter(valid).map(Entity::getId).collect(
+                Collectors.toList());
+    }
+
+    @Override
+    public List<String> getLimitBreachEntityIds() {
+        return entities.values().stream().filter(Entity::isUtilisationBreach).map(
+                Entity::getId).collect(Collectors.toList());
+    }
+
+    @Override
+    public List<String> getLimitMisconfigEntityIds() {
+        return entities.values().stream().filter(Entity::isLimitMisconfig).map(
+                Entity::getId).collect(Collectors.toList());
     }
 }
