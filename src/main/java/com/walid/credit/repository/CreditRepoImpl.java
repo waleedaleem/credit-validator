@@ -48,6 +48,7 @@ public class CreditRepoImpl implements CreditRepo {
             entity.setLimit(Long.parseLong(record.get(index++)));
             entity.setUtilisation(Long.parseLong(record.get(index++)));
             entity.setLoaded();
+            logger.info(entity.toString());
         }
         return entity;
     }

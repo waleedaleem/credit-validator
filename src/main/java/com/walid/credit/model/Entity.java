@@ -36,9 +36,6 @@ public class Entity {
 
     public void raiseChildTotalLimit(long childLimit) {
         this.childTotalLimit += childLimit;
-        if (Objects.nonNull(parent)) {
-            parent.raiseChildTotalLimit(childLimit);
-        }
     }
 
     public void setUtilisation(long utilisation) {
@@ -49,7 +46,11 @@ public class Entity {
     public void raiseTotalUtilisation(long utilisation) {
         this.totalUtilisation += utilisation;
         if (Objects.nonNull(parent)) {
-            parent.raiseTotalUtilisation(utilisation);
+            if (alreadyLoaded()) {
+                parent.raiseTotalUtilisation(utilisation);
+            } else {
+                parent.raiseTotalUtilisation(totalUtilisation);
+            }
         }
     }
 
@@ -78,5 +79,19 @@ public class Entity {
     @Override
     public int hashCode() {
         return Objects.hash(id);
+    }
+
+    @Override
+    public String toString() {
+        String entityStr = "Entity[" + "id='" + id + '\'' + ", limit=" + limit
+                + ", childTotalLimit=" + childTotalLimit + ", utilisation=" + utilisation
+                + ", totalUtilisation=" + totalUtilisation + ", isLoaded=" + isLoaded + ']';
+        StringBuilder sb = new StringBuilder();
+        if (Objects.nonNull(parent)) {
+            sb.append(parent.toString()).append("\n").append(entityStr);
+        } else {
+            sb.append("\n").append(entityStr);
+        }
+        return sb.toString();
     }
 }
