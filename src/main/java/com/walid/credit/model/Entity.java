@@ -27,6 +27,10 @@ public class Entity {
         parent.addChild(this);
     }
 
+    public long getLimit() {
+        return limit;
+    }
+
     public void setLimit(long limit) {
         this.limit = limit;
         if (Objects.nonNull(parent)) {
@@ -36,6 +40,10 @@ public class Entity {
 
     public void raiseChildTotalLimit(long childLimit) {
         this.childTotalLimit += childLimit;
+    }
+
+    public long getUtilisation() {
+        return utilisation;
     }
 
     public void setUtilisation(long utilisation) {

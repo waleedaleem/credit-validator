@@ -9,4 +9,6 @@ import java.io.InputStream;
 public interface CreditProcessor {
 
     void loadEntities(InputStream transactionInputStream) throws IOException;
+
+    void report();
 }

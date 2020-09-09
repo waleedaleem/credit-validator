@@ -29,14 +29,17 @@ public class CreditProcessorImpl implements CreditProcessor {
     @Override
     public void loadEntities(InputStream transactionInputStream) throws IOException {
         try (Reader in = new InputStreamReader(transactionInputStream)) {
-            Iterable<CSVRecord> records = CSVFormat.DEFAULT
-                .withFirstRecordAsHeader()
-                .withIgnoreEmptyLines()
-                .parse(in);
+            Iterable<CSVRecord> records = CSVFormat.DEFAULT.withFirstRecordAsHeader().withIgnoreEmptyLines().parse(
+                    in);
             for (CSVRecord record : records) {
                 repo.addEntity(record);
             }
         }
+    }
+
+    @Override
+    public void report() {
+
     }
 
     private void setRepo(CreditRepo repo) {

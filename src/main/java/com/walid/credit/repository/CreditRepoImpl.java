@@ -45,8 +45,17 @@ public class CreditRepoImpl implements CreditRepo {
                 entities.put(id, entity);
             }
             linkToParent(entity, record.get(index++));
-            entity.setLimit(Long.parseLong(record.get(index++)));
-            entity.setUtilisation(Long.parseLong(record.get(index++)));
+            try {
+                entity.setLimit(Long.parseLong(record.get(index++)));
+                entity.setUtilisation(Long.parseLong(record.get(index++)));
+                if (entity.getLimit() < 0 || entity.getUtilisation() < 0) {
+                    logger.warning("Skipping invalid CSV record");
+                    return null;
+                }
+            } catch (NumberFormatException e) {
+                logger.warning("Skipping invalid CSV record");
+                return null;
+            }
             entity.setLoaded();
             logger.info(entity.toString());
         }

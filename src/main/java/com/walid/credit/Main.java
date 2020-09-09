@@ -32,5 +32,6 @@ public class Main {
         try (FileInputStream txnInputStream = new FileInputStream(args[0])) {
             creditProcessor.loadEntities(txnInputStream);
         }
+        creditProcessor.report();
     }
 }
