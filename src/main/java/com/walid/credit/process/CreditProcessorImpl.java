@@ -39,6 +39,7 @@ public class CreditProcessorImpl implements CreditProcessor {
                 repo.addEntity(record);
             }
         }
+        logger.info("Entities loaded successfully");
     }
 
     @Override
@@ -58,6 +59,7 @@ public class CreditProcessorImpl implements CreditProcessor {
         StringBuilder sbMisconfig = new StringBuilder("Limit Misconfiguration Entities:\n");
         misconfigEntityIds.forEach(id -> sbMisconfig.append(id).append(", "));
         System.out.println(sbMisconfig.toString());
+        logger.info("Report generated successfully");
     }
 
     private void setRepo(CreditRepo repo) {

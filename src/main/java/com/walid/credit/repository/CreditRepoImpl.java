@@ -1,5 +1,7 @@
 package com.walid.credit.repository;
 
+import static java.util.Map.Entry.comparingByKey;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -10,6 +12,7 @@ import java.util.stream.Collectors;
 
 import org.apache.commons.csv.CSVRecord;
 import org.apache.commons.lang3.StringUtils;
+import org.javatuples.Triplet;
 
 import com.walid.credit.model.Entity;
 
@@ -117,5 +120,18 @@ public class CreditRepoImpl implements CreditRepo {
     public List<String> getLimitMisconfigEntityIds() {
         return entities.values().stream().filter(Entity::isLimitMisconfig).map(
                 Entity::getId).collect(Collectors.toList());
+    }
+
+    /**
+     * returns the entries as a {@link List} of {@link Triplet} <id, sub-entity limit, combined
+     * utilisation>
+     * 
+     * @return a triplet
+     */
+    List<Triplet<String, Long, Long>> entitiesAsTriplets() {
+        return entities.entrySet().stream().sorted(comparingByKey()).map(Map.Entry::getValue).map(
+                e -> Triplet.with(
+                        e.getId(), e.getChildTotalLimit(), e.getTotalUtilisation())).collect(
+                                Collectors.toList());
     }
 }
